@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposal: The AI Commitment Protocol by Estetio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-accent: #172554;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --gold: #ca8a04;
+            --gold-light: #fde047;
+            --green: #10b981;
+            --red: #ef4444;
+            --border: rgba(255,255,255,0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* TYPOGRAPHY */
+        h1, h2, h3 { font-family: 'Playfair Display', serif; }
+        .highlight { color: var(--gold); }
+        .text-center { text-align: center; }
+        .section-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--gold);
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        /* 1. HERO SECTION */
+        header {
+            padding: 100px 0 80px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 70%);
+        }
+        .hero-title { font-size: 3.2rem; line-height: 1.1; margin-bottom: 20px; }
+        .hero-sub { font-size: 1.2rem; color: var(--text-muted); max-width: 700px; margin: 0 auto 40px auto; }
+        .client-badge {
+            display: inline-block;
+            background: rgba(202, 138, 4, 0.1);
+            color: var(--gold);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            border: 1px solid var(--gold);
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        /* 2. PROBLEM SECTION */
+        .problem-section { padding: 80px 0; }
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-top: 50px;
+        }
+        .problem-card {
+            background: var(--bg-card);
+            padding: 35px 25px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            transition: transform 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .problem-card:hover { transform: translateY(-5px); border-color: var(--red); }
+        .icon-box { font-size: 2.2rem; color: var(--text-main); margin-bottom: 20px; background: rgba(255,255,255,0.05); width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; border-radius: 12px; }
+        .problem-title { font-size: 1.2rem; margin-bottom: 10px; font-weight: 700; }
+        .problem-desc { font-size: 0.95rem; color: var(--text-muted); }
+        .punchline {
+            text-align: center;
+            margin-top: 40px;
+            font-style: italic;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+        }
+
+        /* 3. COMPARISON SECTION */
+        .comparison-section { padding: 80px 0; background: rgba(30, 41, 59, 0.3); }
+        
+        /* Table Wrapper for Mobile Scrolling */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
+        }
+        
+        .comparison-table {
+            width: 100%;
+            min-width: 600px; /* Ensure table doesn't get too squished */
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 40px;
+            background: var(--bg-card);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+        .comparison-table th, .comparison-table td {
+            padding: 25px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        .comparison-table th { background: #0f172a; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 2px; color: var(--text-muted); }
+        .col-old { color: var(--red); opacity: 0.7; font-size: 0.95rem; text-decoration: line-through; }
+        .col-new { color: var(--green); font-weight: bold; background: rgba(16, 185, 129, 0.03); font-size: 1.05rem; }
+
+        /* 4. FLOWCHART SECTION */
+        .flow-section { padding: 100px 0; border-bottom: 1px solid var(--border); }
+        .flow-container { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-top: 60px; }
+        .flow-card { 
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 30px; 
+            text-align: center; flex: 1; position: relative; z-index: 2;
+        }
+        .flow-card.main { border: 2px solid var(--gold); background: linear-gradient(135deg, #1e293b, #2b1f06); box-shadow: 0 0 30px rgba(202, 138, 4, 0.15); transform: scale(1.05); }
+        .flow-icon { font-size: 2.5rem; color: var(--gold); margin-bottom: 15px; }
+        .flow-title { font-weight: 700; color: white; margin-bottom: 5px; font-size: 1.1rem; }
+        .flow-desc { color: var(--text-muted); font-size: 0.9rem; }
+        .flow-arrow { font-size: 2rem; color: var(--text-muted); opacity: 0.5; }
+
+        /* 5. SOLUTION & PILLARS */
+        .solution-section { padding: 100px 0; }
+        .pillar-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; margin-top: 60px; }
+        .pillar-item { display: flex; gap: 25px; }
+        .pillar-num {
+            font-family: 'Playfair Display';
+            font-size: 3.5rem;
+            line-height: 1;
+            color: transparent;
+            -webkit-text-stroke: 1px var(--gold);
+            font-weight: 700;
+            opacity: 0.5;
+        }
+        .pillar-content h4 { font-size: 1.4rem; margin-bottom: 10px; color: var(--text-main); font-weight: 700; }
+        .tech-badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: var(--gold);
+            background: rgba(202, 138, 4, 0.1);
+            padding: 4px 10px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .highlight-pillar { 
+            border: 1px solid var(--gold); 
+            padding: 25px; 
+            border-radius: 12px; 
+            background: rgba(202, 138, 4, 0.05); 
+            margin-top: -25px; margin-left: -25px; /* Offset correction */
+        }
+
+        /* 6. ROI / LOGIC */
+        .roi-section { padding: 80px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+        .roi-box {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border: 1px solid var(--gold);
+            border-radius: 20px;
+            padding: 50px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(202, 138, 4, 0.1);
+        }
+        .roi-table-simple {
+            width: 100%;
+            min-width: 500px; /* Min width to prevent crushing text */
+            margin-top: 30px;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+        .roi-table-simple td { padding: 20px; background: rgba(255,255,255,0.02); border-radius: 8px; }
+        .roi-table-simple tr.highlight-row td { 
+            background: rgba(202, 138, 4, 0.15); 
+            border: 1px solid rgba(202, 138, 4, 0.3); 
+            font-weight: bold; 
+            color: var(--gold); 
+            font-size: 1.2rem;
+        }
+
+        /* 7. PACKAGE / DELIVERABLES */
+        .package-section { padding: 100px 0; background: rgba(30, 41, 59, 0.3); }
+        
+        .deliverables-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .deliverable-card {
+            background: var(--bg-card);
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .deliverable-card:hover {
+            border-color: var(--gold);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .del-icon {
+            color: var(--green);
+            font-size: 1.8rem;
+            background: rgba(16, 185, 129, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            min-width: 50px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .del-content h4 {
+            color: var(--text-main);
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            font-weight: 700;
+            margin-top: 0;
+        }
+
+        .del-content p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin: 0;
+        }
+        
+        .checklist { /* Keeping old class for fallback, though deliverables-grid is used now */
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            background: var(--bg-card);
+            padding: 40px;
+            border-radius: 20px;
+            margin-top: 40px;
+            border: 1px solid var(--border);
+        }
+        .check-item { display: flex; align-items: start; gap: 15px; font-size: 1rem; color: var(--text-muted); }
+        .check-item strong { color: var(--text-main); display: block; margin-bottom: 4px; font-size: 1.05rem; }
+        .check-icon { color: var(--green); font-size: 1.5rem; margin-top: 2px; flex-shrink: 0; }
+
+        /* 8. GUARANTEE */
+        .guarantee-section { text-align: center; padding: 60px 0; background: rgba(16, 185, 129, 0.05); }
+        .shield-icon { font-size: 3rem; color: var(--green); margin-bottom: 15px; }
+
+        /* 9. CTA */
+        .cta-section { padding: 100px 0; text-align: center; }
+        .cta-btn {
+            display: inline-block;
+            background: var(--gold);
+            color: #000;
+            padding: 22px 60px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            text-decoration: none;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(202, 138, 4, 0.3);
+            transition: all 0.3s;
+            margin-top: 40px;
+            letter-spacing: 1px;
+        }
+        .cta-btn:hover { transform: translateY(-5px); background: var(--gold-light); box-shadow: 0 20px 40px rgba(202, 138, 4, 0.4); }
+
+        /* RESPONSIVE OPTIMIZATION */
+        @media (max-width: 768px) {
+            .hero-title { font-size: 2.2rem; }
+            .section { padding: 60px 0; }
+            
+            /* Stack Grids */
+            .problem-grid, 
+            .pillar-grid, 
+            .checklist, 
+            .flow-container, 
+            .deliverables-grid { 
+                grid-template-columns: 1fr; 
+                flex-direction: column;
+            }
+            
+            /* Flowchart Adjustments */
+            .flow-arrow { transform: rotate(90deg); margin: 15px 0; }
+            .flow-card.main { transform: scale(1); border-width: 1px; }
+            
+            /* Table Scrolling */
+            .comparison-table, .roi-table-simple { font-size: 0.8rem; }
+            .comparison-table th, .comparison-table td { padding: 15px; }
+            
+            /* Pillar Tweaks */
+            .highlight-pillar { margin: 0; } /* Remove offset on mobile */
+            
+            /* ROI Box */
+            .roi-box { padding: 25px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <div class="client-badge">CONFIDENTIAL PROPOSAL</div>
+            <h1 class="hero-title">The "Anti-Ghosting"<br><span class="highlight">Patient System.</span></h1>
+            <p class="hero-sub">Menggabungkan <strong>Predictive AI</strong> dengan <strong>Prepaid Commitment (Deposit)</strong>. Kami memfilter "Leads Murah" dan hanya mengirimkan "Pasien Siap Bayar" ke meja resepsionis Anda.</p>
+        </div>
+    </header>
+
+    <section class="problem-section">
+        <div class="container">
+            <span class="section-label text-center">THE REALITY</span>
+            <h2 class="text-center">Kenapa Iklan Sering "Boncos"?</h2>
+            
+            <div class="problem-grid">
+                <div class="problem-card">
+                    <div class="icon-box"><i class="ph-fill ph-ghost"></i></div>
+                    <div class="problem-title">The Ghosting Epidemic</div>
+                    <p class="problem-desc">Pasien janji datang hari Sabtu, Dokter sudah standby, tapi batal mendadak tanpa kabar. Slot waktu & biaya operasional terbuang sia-sia.</p>
+                </div>
+                <div class="problem-card">
+                    <div class="icon-box"><i class="ph-fill ph-chat-teardrop-slash"></i></div>
+                    <div class="problem-title">Admin Burnout</div>
+                    <p class="problem-desc">Admin klinik stress membalas ratusan chat "Cek Harga", namun konversinya rendah karena melayani 'Price Shopper' yang tidak serius.</p>
+                </div>
+                <div class="problem-card">
+                    <div class="icon-box"><i class="ph-fill ph-wallet"></i></div>
+                    <div class="problem-title">Zero Commitment</div>
+                    <p class="problem-desc">Pemasukan klinik tidak bisa diprediksi karena bergantung pada "Harapan" pasien akan datang tanpa ikatan uang.</p>
+                </div>
+            </div>
+            
+            <div class="punchline">
+                "Vanity Metrics (Likes/Comments) tidak membayar tagihan listrik klinik."
+            </div>
+        </div>
+    </section>
+
+    <section class="comparison-section">
+        <div class="container">
+            <span class="section-label">THE SHIFT</span>
+            <h2>Stop Doing "Hope Marketing"</h2>
+            <p style="color: var(--text-muted); max-width: 600px; margin-top: 10px;">Perbedaan strategi manual dengan sistem Intelligence Estetio.</p>
+            
+            <div class="table-responsive">
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th width="30%">Metric</th>
+                            <th width="35%">Agency Manual</th>
+                            <th width="35%" style="color: var(--gold);">Estetio AI Protocol</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Funnel Flow</strong></td>
+                            <td class="col-old">Chat WA &rarr; Tanya Harga &rarr; Kabur</td>
+                            <td class="col-new">AI Filter &rarr; Pre-Qualified &rarr; Paid Booking (DP) &rarr; VIP</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Targeting</strong></td>
+                            <td class="col-old">Tebak-tebakan Interest</td>
+                            <td class="col-new">Predictive AI (Pasien Mirip)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cashflow</strong></td>
+                            <td class="col-old">Menunggu pasien datang</td>
+                            <td class="col-new">Diterima di depan (Deposit)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Show-up Rate</strong></td>
+                            <td class="col-old">Rendah (< 30%)</td>
+                            <td class="col-new">Sangat Tinggi (> 85%)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section class="flow-section">
+        <div class="container">
+            <div class="text-center">
+                <span class="section-label">HOW IT WORKS</span>
+                <h2 style="font-size: 2.5rem;">The Automated Logic</h2>
+                <p style="color: var(--text-muted);">Sistem bekerja 24/7 tanpa perlu pengawasan manual.</p>
+            </div>
+
+            <div class="flow-container">
+                <div class="flow-card">
+                    <div class="flow-icon"><i class="ph-duotone ph-brain"></i></div>
+                    <div class="flow-title">1. Predictive Ads</div>
+                    <div class="flow-desc">AI mencari audiens dengan daya beli tinggi (mirip pasien lama).</div>
+                </div>
+
+                <div class="flow-arrow"><i class="ph-bold ph-arrow-right"></i></div>
+
+                <div class="flow-card main">
+                    <div class="flow-icon"><i class="ph-duotone ph-funnel"></i></div>
+                    <div class="flow-title">2. Prepaid Gate</div>
+                    <div class="flow-desc">Leads disaring. Yang serius langsung bayar <strong>Deposit (DP)</strong> untuk kunci slot.</div>
+                </div>
+
+                <div class="flow-arrow"><i class="ph-bold ph-arrow-right"></i></div>
+
+                <div class="flow-card">
+                    <div class="flow-icon"><i class="ph-duotone ph-calendar-check"></i></div>
+                    <div class="flow-title">3. Paid Patient</div>
+                    <div class="flow-desc">Admin menerima jadwal pasien yang sudah lunas/DP. Tinggal upsell.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="solution-section">
+        <div class="container">
+            <div class="text-center" style="max-width: 800px; margin: 0 auto;">
+                <span class="section-label">THE INTELLIGENCE ENGINE</span>
+                <h2 style="font-size: 2.5rem; margin-bottom: 20px;">The Estetio <span class="highlight">Commitment Protocol</span></h2>
+                <p style="font-size: 1.1rem; color: #94a3b8;">4 Pilar Teknologi yang memisahkan Estetio dari agensi konvensional.</p>
+            </div>
+
+            <div class="pillar-grid">
+                <div class="pillar-item">
+                    <div class="pillar-num">01</div>
+                    <div class="pillar-content">
+                        <span class="tech-badge">ACQUISITION</span>
+                        <h4>Predictive AI Targeting</h4>
+                        <p style="color: #94a3b8;">Kami mengunggah data 'Pasien Sultan' Anda ke sistem AI, lalu memerintahkan algoritma untuk mencari profil audiens serupa yang memiliki <strong>Daya Beli Tinggi</strong>.</p>
+                    </div>
+                </div>
+                
+                <div class="pillar-item">
+                    <div class="pillar-content highlight-pillar">
+                        <div style="display: flex; gap: 15px; margin-bottom: 10px;">
+                            <span class="pillar-num" style="font-size: 2.5rem; opacity: 1; -webkit-text-stroke: 0; color: var(--gold);">02</span>
+                            <div>
+                                <span class="tech-badge">FILTERING & REVENUE</span>
+                                <h4 style="color: var(--gold);">Smart Filter & Prepaid Gate</h4>
+                            </div>
+                        </div>
+                        <p style="color: #cbd5e1;">Bukan sekadar formulir. Kami menerapkan sistem <strong>Deposit (Commitment Fee)</strong> otomatis. <br><br>Leads yang tidak serius akan terbuang oleh filter, sementara leads berkualitas akan langsung membayar <strong>Uang Muka</strong>.</p>
+                    </div>
+                </div>
+
+                <div class="pillar-item">
+                    <div class="pillar-num">03</div>
+                    <div class="pillar-content">
+                        <span class="tech-badge">RETENTION</span>
+                        <h4>Intent-Based Automation</h4>
+                        <p style="color: #94a3b8;">Bot cerdas yang bekerja 24/7. Mengejar leads yang "Lupa Transfer" vs "Masih Ragu". Menyelamatkan 30% potensi omzet yang biasanya hilang.</p>
+                    </div>
+                </div>
+                
+                <div class="pillar-item">
+                    <div class="pillar-num">04</div>
+                    <div class="pillar-content">
+                        <span class="tech-badge">CONVERSION</span>
+                        <h4>Upsell & Conversion Protocol</h4>
+                        <p style="color: #94a3b8;">Teknologi butuh sentuhan manusia. Kami melatih Admin Klinik Anda dengan <strong>SOP & Script Psikologis</strong> untuk mengubah booking online menjadi transaksi Upselling.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="roi-section">
+        <div class="container">
+            <span class="section-label text-center">THE MONEY LOGIC</span>
+            <h2 class="text-center" style="margin-bottom: 40px;">Quality Over Quantity</h2>
+            
+            <div class="roi-box">
+                <p class="text-center" style="margin-bottom: 20px; font-size: 1.1rem;">Dok, mending mana: <strong>100 orang chat tapi cuma 5 yang datang</strong>? Atau <strong>25 orang chat tapi 23 datang</strong> karena sudah bayar DP?</p>
+                
+                <div class="table-responsive">
+                    <table class="roi-table-simple">
+                        <tr style="color: var(--text-muted); font-size: 0.9rem; text-transform: uppercase;">
+                            <td>Metric</td>
+                            <td>Agency Biasa (Tanpa DP)</td>
+                            <td style="color: var(--gold);">Estetio Protocol</td>
+                        </tr>
+                        <tr>
+                            <td>Leads Masuk</td>
+                            <td>100 Orang (Campur aduk)</td>
+                            <td>40 Orang (Tersaring)</td>
+                        </tr>
+                        <tr>
+                            <td>Effort Admin</td>
+                            <td>Capek balas 100 chat</td>
+                            <td>Fokus balas 40 chat serius</td>
+                        </tr>
+                        <tr>
+                            <td>No-Show (Ghosting)</td>
+                            <td>15 Orang (Hilang)</td>
+                            <td>2 Orang (Sayang DP Hilang)</td>
+                        </tr>
+                        <tr class="highlight-row">
+                            <td>YANG BENAR DATANG</td>
+                            <td>15 Pasien</td>
+                            <td>23 Pasien</td>
+                        </tr>
+                        <tr class="highlight-row">
+                            <td>CASHFLOW AWAL</td>
+                            <td>Rp 0</td>
+                            <td>Rp 2.300.000 (Deposit)</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="package-section">
+        <div class="container">
+            <span class="section-label">DELIVERABLES</span>
+            <h2>Complete Growth Ecosystem</h2>
+            <p style="color: var(--text-muted); margin-bottom: 20px;">Apa saja yang akan Anda dapatkan dalam paket kerja sama ini?</p>
+            
+            <div class="deliverables-grid">
+                <!-- Item 1 -->
+                <div class="deliverable-card">
+                    <div class="del-icon"><i class="ph-fill ph-check-circle"></i></div>
+                    <div class="del-content">
+                        <h4>Tech Setup Ecosystem</h4>
+                        <p>Pembuatan Landing Page Konversi Tinggi, Integrasi Payment Gateway, dan Setup WA Automation Bot.</p>
+                    </div>
+                </div>
+
+                <!-- Item 2 -->
+                <div class="deliverable-card">
+                    <div class="del-icon"><i class="ph-fill ph-check-circle"></i></div>
+                    <div class="del-content">
+                        <h4>Ad Strategy & Management</h4>
+                        <p>Strategi Meta Ads (FB/IG) yang berfokus pada ROI, A/B Testing audiens, dan optimasi budget harian.</p>
+                    </div>
+                </div>
+
+                <!-- Item 3 -->
+                <div class="deliverable-card">
+                    <div class="del-icon"><i class="ph-fill ph-check-circle"></i></div>
+                    <div class="del-content">
+                        <h4>Creative Studio</h4>
+                        <p>Produksi aset iklan segar setiap bulan: 4 Video Ads (Reels Style) + 4 Graphic Ads High-End.</p>
+                    </div>
+                </div>
+
+                <!-- Item 4 -->
+                <div class="deliverable-card">
+                    <div class="del-icon"><i class="ph-fill ph-check-circle"></i></div>
+                    <div class="del-content">
+                        <h4>SOP Training Module</h4>
+                        <p>Modul pelatihan Admin Klinik: Script handling objection, cara follow-up, dan teknik closing pasien VIP.</p>
+                    </div>
+                </div>
+
+                <!-- Item 5 -->
+                <div class="deliverable-card">
+                    <div class="del-icon"><i class="ph-fill ph-check-circle"></i></div>
+                    <div class="del-content">
+                        <h4>Performance Audit</h4>
+                        <p>Laporan bulanan transparan dengan insight performa mendalam dan rencana strategi bulan berikutnya.</p>
+                    </div>
+                </div>
+
+                <!-- Item 6 -->
+                <div class="deliverable-card">
+                    <div class="del-icon"><i class="ph-fill ph-check-circle"></i></div>
+                    <div class="del-content">
+                        <h4>Bonus: Competitor Spy</h4>
+                        <p>Analisa pergerakan kompetitor terdekat Anda untuk memastikan penawaran kita selalu lebih unggul.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="guarantee-section">
+        <div class="container">
+            <i class="ph-duotone ph-shield-check shield-icon"></i>
+            <h3>Ketenangan Pikiran Anda Prioritas Kami</h3>
+            <p style="color: var(--text-muted); max-width: 600px; margin: 10px auto;">Kami memonitor performa setiap hari. Laporan transparan. Database leads 100% milik Anda selamanya. Semakin lama AI bekerja, semakin cerdas hasilnya.</p>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <div class="container">
+            <h2 style="font-size: 3rem; line-height: 1.1;">Ready to Upgrade?</h2>
+            <p style="font-size: 1.2rem; color: var(--text-muted); margin-top: 20px;">Berhenti mengejar Leads. Mulai layani Pasien yang sudah bayar.</p>
+            
+            <a href="https://wa.me/6281234567890" class="cta-btn">
+                Activate Prepaid Protocol <i class="ph-bold ph-arrow-right" style="vertical-align: middle; margin-left: 10px;"></i>
+            </a>
+            
+            <p style="font-size: 0.8rem; color: #64748b; margin-top: 40px;">
+                Limited Partnership Availability for Q1 2026<br>
+                &copy; 2026 Estetio Agency. All Rights Reserved.
+            </p>
+        </div>
+    </section>
+
+</body>
+</html>
